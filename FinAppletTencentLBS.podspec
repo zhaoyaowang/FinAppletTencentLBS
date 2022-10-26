@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "FinAppletTencentLBS"
-  s.version      = "1.0.1"
+  s.version      = "1.0.2"
   s.summary      = "FinApplet TencentLBS sdk."
   s.description  = <<-DESC
                     this is FinApplet TencentLBS sdk
@@ -16,7 +16,6 @@ Pod::Spec.new do |s|
   s.platform     = :ios, "9.0"
   s.ios.deployment_target = "9.0"
   s.source       = { :git => "https://github.com/zhaoyaowang/FinAppletTencentLBS.git", :tag => "#{s.version}" }
-  s.source_files  = "TencentLBS/**/*.{h,m,c}"
   s.vendored_frameworks = 'TencentLBS.framework'
   s.libraries = 'z.1.2.5'
   s.requires_arc = true
