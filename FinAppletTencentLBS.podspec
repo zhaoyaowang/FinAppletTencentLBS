@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "FinAppletTencentLBS"
-  s.version      = "1.0.0"
+  s.version      = "1.0.1"
   s.summary      = "FinApplet TencentLBS sdk."
   s.description  = <<-DESC
                     this is FinApplet TencentLBS sdk
