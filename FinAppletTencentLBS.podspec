@@ -15,7 +15,7 @@ Pod::Spec.new do |s|
   s.author             = { "finclip" => "contact@finogeeks.com" }
   s.platform     = :ios, "9.0"
   s.ios.deployment_target = "9.0"
-  spec.source       = { :git => "https://github.com/zhaoyaowang/FinAppletTencentLBS.git", :tag => "#{spec.version}" }
+  s.source       = { :git => "https://github.com/zhaoyaowang/FinAppletTencentLBS.git", :tag => "#{s.version}" }
   s.source_files  = "FinAppletTencentLBS/**/*.{h,m,c}"
   s.vendored_frameworks = 'FinAppletTencentLBS.framework'
   s.libraries = 'z.1.2.5'
