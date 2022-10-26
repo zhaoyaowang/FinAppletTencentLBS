@@ -14,16 +14,29 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface TencentLBSLocationUtils : NSObject
-
+/**
+ *  计算两个坐标点的距离
+ */
 + (double)distanceBetweenTwoCoordinate2D:(const CLLocationCoordinate2D *)coordinate coordinateTwo:(const CLLocationCoordinate2D *)coordinate2;
-
+/**
+ *  计算两个location的距离
+ */
 + (double)distanceBetweenTwoCLLocations:(const CLLocation *)location locationTwo:(const CLLocation *)location2;
 
+/**
+ *  计算两个TencentLBSLocation的距离
+ */
 + (double)distanceBetweenTwoTencentLBSLocations:(const TencentLBSLocation *)location locationTwo:(const TencentLBSLocation *)location2;
 
-// 参数add表示是否要包括台湾，YES为包括， NO不包括
-+ (BOOL) isInRegionWithLatitude:(double)latitude longitude:(double)longitude addTaiwan:(BOOL)add;
+/**
+ *  判断经纬度是否在国内
+ *  
+ */
++ (BOOL) isInRegionWithLatitude:(double)latitude longitude:(double)longitude;
 
+/**
+ *  wgs84坐标转成gcj02坐标
+ */
 + (CLLocationCoordinate2D)WGS84TOGCJ02:(CLLocationCoordinate2D)coordinate;
 
 @end

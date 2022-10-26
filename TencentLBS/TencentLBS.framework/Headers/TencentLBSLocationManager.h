@@ -32,6 +32,36 @@ typedef NS_ENUM(NSUInteger, TencentLBSLocationError) {
     TencentLBSLocationErrorOther = 4,                   //!< 错误码，表示未知错误
 };
 
+typedef NS_ENUM(NSInteger, TencentLBSDRStartCode) {
+    TencentLBSDRStartCodeSuccess            = 0,    //!< 启动成功
+    TencentLBSDRStartCodeNotSupport         = -1,   //!< 传感器有缺失或没有GPS芯片
+    TencentLBSDRStartCodeHasStarted         = -2,   //!< 已经启动
+    TencentLBSDRStartCodeSensorFailed       = -3,   //!< 传感器启动失败
+    TencentLBSDRStartCodeGpsFailed          = -4,   //!< GPS启动失败
+    TencentLBSDRStartCodePermissionFailed   = -5,   //!< 没有位置权限
+    TencentLBSDRStartCodeUnkown             = -6,   //!< 未知
+};
+typedef NS_ENUM(NSInteger, TencentLBSDRStartMotionType) {
+    TencentLBSDRStartMotionTypeWalk                 = 2,    //!< 步行
+    TencentLBSDRStartMotionTypeBike                 = 3,    //!< 骑行
+};
+
+typedef NS_ENUM(NSInteger, TencentLBSAccuracyAuthorization) {
+    // This application has the user's permission to receive accurate location information.
+    TencentLBSAccuracyAuthorizationFullAccuracy,
+
+    // The user has chosen to grant this application access to location information with reduced accuracy.
+    // Region monitoring and beacon ranging are not available to the application.  Other CoreLocation APIs
+    // are available with reduced accuracy.
+
+    // Location estimates will have a horizontalAccuracy on the order of about 5km.  To achieve the
+    // reduction in accuracy, CoreLocation will snap location estimates to a nearby point which represents
+    // the region the device is in.  Furthermore, CoreLocation will reduce the rate at which location
+    // estimates are produced.  Applications should be prepared to receive locations that are up to 20
+    // minutes old.
+    TencentLBSAccuracyAuthorizationReducedAccuracy,
+};
+
 /**
  *  TencentLBSLocatingCompletionBlock 单次定位返回Block
  *
@@ -43,11 +73,20 @@ typedef void (^TencentLBSLocatingCompletionBlock)(TencentLBSLocation * _Nullable
 @protocol TencentLBSLocationManagerDelegate;
 
 @interface TencentLBSLocationManager : NSObject
+/**
+ * 当前位置管理器定位精度的授权状态
+ */
+@property(nonatomic, readonly)TencentLBSAccuracyAuthorization accuracyAuthorization;
+/**
+ * 当前位置管理器定位权限的授权状态
+ */
+@property(nonatomic, readonly)CLAuthorizationStatus authorizationStatus;
 
 /**
  *  API Key, 在使用定位SDK服务之前需要先绑定key。
  */
 @property (nonatomic, copy) NSString* apiKey;
+
 
 /**
  *  实现了 TencentLBSLocationManagerDelegate 协议的类指针。
@@ -111,6 +150,28 @@ typedef void (^TencentLBSLocatingCompletionBlock)(TencentLBSLocation * _Nullable
  *  指定POI的更新间隔。 默认是10s
  */
 @property(nonatomic, assign) NSInteger poiUpdateInterval;
+#pragma mark -
+/**
+ * accuracyAuthorization
+ *
+ * Discussion:
+ *      Return the current TencentLBSAccuracyAuthorization of the calling application.
+ */
++ (TencentLBSAccuracyAuthorization)accuracyAuthorization;
+
+/**
+ * 设置用户是否同意隐私协议政策
+ * <p>调用其他接口前必须首先调用此接口进行用户是否同意隐私政策的设置，传入YES后才能正常使用定位功能，否则TencentLBSLocationManager初始化不成功，返回nil，定位功能均无法使用</p>
+ * @param isAgree 是否同意隐私政策
+ */
++ (void)setUserAgreePrivacy:(BOOL) isAgree;
+
+/**
+ * 获取用户是否同意隐私政策协议
+ * <p>设置用户隐私后，可通过该接口判断用户隐私状态</p>
+ * @return isAgreePrivacy 是否同意隐私政策
+ */
++ (BOOL)getUserAgreePrivacy;
 
 #pragma mark -
 
@@ -118,7 +179,40 @@ typedef void (^TencentLBSLocatingCompletionBlock)(TencentLBSLocation * _Nullable
 
 - (void)requestAlwaysAuthorization;
 
+/**
+ * 当前属于模糊定位状态时，通过该接口请求暂时的完全定位精度的权限
+ * @param purposeKey 需要在info.plist中配置NSLocationTemporaryUsageDescriptionDictionary key值和对应的申请该权限的描述理由
+ * @param completion 在弹框让用户选择后的用户的反馈，如果用户授予该权限，block中的参数为nil，如果未授予，block中的参数将为PurposeKey对于的key的描述（如PurposeKey=TemporaryPurposKey_1）
+ */
+- (void)requestTemporaryFullAccuracyAuthorizationWithPurposeKey:(NSString *)purposeKey
+                                                     completion:(void (^)(NSError *))completion;
+/**
+ * 当前属于模糊定位状态时，通过该接口请求暂时的完全定位精度的权限
+ * @param purposeKey 需要在info.plist中配置NSLocationTemporaryUsageDescriptionDictionary key值和对应的申请该权限的描述理由
+ */
+- (void)requestTemporaryFullAccuracyAuthorizationWithPurposeKey:(NSString *)purposeKey;
+
+
 #pragma mark -
+/**
+ *  获取定位SDK的版本
+ */
++(NSString *)getLBSSDKVersion;
+
+/**
+ *  获取定位SDK的构建日期
+ */
++(NSString *)getLBSSDKbuild;
+
+
+#pragma mark -
+
+/**
+ *  向SDK内部设置数据，以满足定制的需求
+ *  @param value
+ *  @param key
+ */
+- (void)setDataWithValue:(NSString *)value forKey:(NSString *)key;
 
 /**
  *  单次定位
@@ -172,6 +266,36 @@ typedef void (^TencentLBSLocatingCompletionBlock)(TencentLBSLocation * _Nullable
  */
 - (void)dismissHeadingCalibrationDisplay;
 
+#pragma mark - PDR 对外接口
+/**
+ * 主动获取DR实时融合位置，调用startDrEngine:成功后才可能有值，业务可根据自己的频率主动获取
+ * @return DR融合后的定位结果
+ */
+-(TencentLBSLocation *)getPosition;
+
+/**
+ * 启动DR引擎。引擎会自动获取传感器和GPS数据，并进行位置计算。
+ * 启动后DR引擎会主动开启CLLocationManager startUpdatingLocation。
+ *
+ * 注意：请确保调用之前已获取位置权限（使用期间或者始终允许）
+ *
+ * @param type 运动类型 目前支持,参考TencentLBSDRStartMotionType
+ * @return 返回码，参考TencentLBSDRStartCode
+ */
+-(TencentLBSDRStartCode)startDrEngine:(TencentLBSDRStartMotionType)type;
+
+/**
+ * 停止DR引擎。内部有极短时间延迟，若在此期间调用TencentLBSLocationManager startDrEngine:可能导致启动不成功。
+ */
+-(void)terminateDrEngine;
+
+/**
+ * 是否支持DR引擎
+ * @return
+ */
+-(BOOL)isSupport;
+
+#pragma mark - test used
 // 测试使用
 #if TENCENTLBS_DEBUG
 + (void)upLoadData;
@@ -211,12 +335,18 @@ typedef void (^TencentLBSLocatingCompletionBlock)(TencentLBSLocation * _Nullable
 
 /**
  *  定位权限状态改变时回调函数
- *
+ *  @deprecated 在iOS 14及以上废弃，由tencentLBSDidChangeAuthorization:代替
  *  @param manager 定位 TencentLBSLocationManager 类
  *  @param status  定位权限状态
  */
 - (void)tencentLBSLocationManager:(TencentLBSLocationManager *)manager
      didChangeAuthorizationStatus:(CLAuthorizationStatus)status;
+
+/**
+ *  定位权限状态改变时回调函数
+ *  @param manager 定位 TencentLBSLocationManager 类，由此访问authorizationStatus,accuracyAuthorization
+ */
+- (void)tencentLBSDidChangeAuthorization:(TencentLBSLocationManager *)manager;
 
 /**
  *  定位朝向改变时回调函数
