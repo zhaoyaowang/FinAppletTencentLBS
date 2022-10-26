@@ -1,8 +1,10 @@
 # TencentLBS
 
-![Build Status](https://img.shields.io/badge/pod-3.18-blue.svg)
-![Build Status](https://img.shields.io/badge/platform-iOS-dark.svg)
-![Build Status](https://img.shields.io/badge/build-success-green.svg)
+[![CI Status](https://img.shields.io/travis/804258952@qq.com/TencentLBS.svg?style=flat)](https://travis-ci.org/804258952@qq.com/TencentLBS)
+[![Version](https://img.shields.io/cocoapods/v/TencentLBS.svg?style=flat)](https://cocoapods.org/pods/TencentLBS)
+[![License](https://img.shields.io/cocoapods/l/TencentLBS.svg?style=flat)](https://cocoapods.org/pods/TencentLBS)
+[![Platform](https://img.shields.io/cocoapods/p/TencentLBS.svg?style=flat)](https://cocoapods.org/pods/TencentLBS)
+
 ## Example
 
 To run the example project, clone the repo, and run `pod install` from the Example directory first.

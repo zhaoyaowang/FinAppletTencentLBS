@@ -1,26 +1,34 @@
+#
+# Be sure to run `pod lib lint TencentLBS.podspec' to ensure this is a
+# valid spec before submitting.
+#
+# Any lines starting with a # are optional, but their use is encouraged
+# To learn more about a Podspec see https://guides.cocoapods.org/syntax/podspec.html
+#
+
 Pod::Spec.new do |s|
-  s.name         = "FinAppletTencentLBS"
-  s.version      = "1.0.5"
-  s.summary      = "FinApplet TencentLBS sdk."
-  s.description  = <<-DESC
-                    this is FinApplet TencentLBS sdk
-                   DESC
+  s.name             = 'FinAppletTencentLBS'
+  s.version          = '1.0.6'
+  s.summary          = 'a library of TencentLBS.'
+
+# This description is used to generate tags and improve search results.
+#   * Think: What does it do? Why did you write it? What is the focus?
+#   * Try to keep it short, snappy and to the point.
+#   * Write the description between the DESC delimiters below.
+#   * Finally, don't worry about the indent, CocoaPods strips it!
+
+  s.description      = <<-DESC
+  TencentLBS SDK has not been updated sin 2018, to integrate more easily, create this repo
+                       DESC
+
   s.homepage     = "https://www.finclip.com"
-  s.license      = {
-    :type => 'Copyright',
-    :text => <<-LICENSE
-      Copyright 2017 finogeeks.com. All rights reserved.
-      LICENSE
-  }
+  # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
+  s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author             = { "finclip" => "contact@finogeeks.com" }
-  s.platform     = :ios, "9.0"
-  s.ios.deployment_target = "9.0"
-  s.source       = { :git => "https://github.com/zhaoyaowang/FinAppletTencentLBS.git", :tag => "#{s.version}" }
-  s.vendored_frameworks = 'FinAppletTencentLBS/FinAppletTencentLBS.framework'
-  s.libraries = 'z.1.2.5'
-  s.requires_arc = true
-  s.pod_target_xcconfig = {
-    'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64'
-  }
+  s.source           = { :git => 'https://github.com/zhaoyaowang/FinAppletTencentLBS.git', :tag => s.version.to_s }
+
+  s.ios.deployment_target = '9.0'
+  s.vendored_frameworks = 'TencentLBS/TencentLBS.framework'
+  s.library = "z.1.2.5"
   s.user_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
 end
