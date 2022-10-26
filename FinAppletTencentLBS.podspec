@@ -16,8 +16,8 @@ Pod::Spec.new do |s|
   s.platform     = :ios, "9.0"
   s.ios.deployment_target = "9.0"
   s.source       = { :git => "https://github.com/zhaoyaowang/FinAppletTencentLBS.git", :tag => "#{s.version}" }
-  s.source_files  = "FinAppletTencentLBS/**/*.{h,m,c}"
-  s.vendored_frameworks = 'FinAppletTencentLBS.framework'
+  s.source_files  = "TencentLBS/**/*.{h,m,c}"
+  s.vendored_frameworks = 'TencentLBS.framework'
   s.libraries = 'z.1.2.5'
   s.requires_arc = true
   s.pod_target_xcconfig = {
